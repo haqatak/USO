@@ -350,16 +350,21 @@ def load_flow_model_only_lora(
 
     if ckpt_path is not None:
         print(f"Loading lora from {lora_ckpt_path}")
-        lora_sd = (
-            load_sft(lora_ckpt_path, device=str(device))
-            if lora_ckpt_path.endswith("safetensors")
-            else torch.load(lora_ckpt_path, map_location="cpu")
-        )
-        proj_sd = (
-            load_sft(proj_ckpt_path, device=str(device))
-            if proj_ckpt_path.endswith("safetensors")
-            else torch.load(proj_ckpt_path, map_location="cpu")
-        )
+        lora_sd = {}
+        if lora_ckpt_path:
+            lora_sd = (
+                load_sft(lora_ckpt_path, device=str(device))
+                if lora_ckpt_path.endswith("safetensors")
+                else torch.load(lora_ckpt_path, map_location="cpu")
+            )
+
+        proj_sd = {}
+        if proj_ckpt_path:
+            proj_sd = (
+                load_sft(proj_ckpt_path, device=str(device))
+                if proj_ckpt_path.endswith("safetensors")
+                else torch.load(proj_ckpt_path, map_location="cpu")
+            )
         lora_sd.update(proj_sd)
 
         print("Loading main checkpoint")
